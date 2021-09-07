@@ -29,5 +29,6 @@
         <file>qml/AccountingPage.qml</file>
         <file>qml/common/AccountingPopup.qml</file>
         <file>qml/common/AccountingEditingPopup.qml</file>
+        <file>qml/common/PurchaseFilterModel.qml</file>
     </qresource>
 </RCC>
