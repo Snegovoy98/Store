@@ -33,6 +33,8 @@ void PurchaseFilterProxyModel::setProductData(const QString &productValue)
     QRegExp regExp(productValue, Qt::CaseSensitive, QRegExp::FixedString);
 
    setFilterRegExp(regExp);
+
+   invalidateFilter();
 }
 
 void PurchaseFilterProxyModel::setProviderData(const QString &providerValue)
@@ -40,4 +42,6 @@ void PurchaseFilterProxyModel::setProviderData(const QString &providerValue)
     QRegExp regExp(providerValue, Qt::CaseSensitive, QRegExp::FixedString);
 
     setFilterRegExp(regExp);
+
+    invalidateFilter();
 }
