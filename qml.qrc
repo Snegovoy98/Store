@@ -1,0 +1,33 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qml/MainPage.qml</file>
+        <file>resources/button_img/accounting.png</file>
+        <file>resources/button_img/accounting_data.png</file>
+        <file>resources/button_img/calculator.png</file>
+        <file>resources/button_img/calendar_icon.png</file>
+        <file>resources/button_img/category.png</file>
+        <file>resources/button_img/default_picture.png</file>
+        <file>resources/button_img/purchase_img.png</file>
+        <file>resources/button_img/purchase_list.png</file>
+        <file>resources/button_img/purchase_report.png</file>
+        <file>resources/button_img/turn_left.png</file>
+        <file>qml/ProviderPage.qml</file>
+        <file>qml/common/MessageBox.qml</file>
+        <file>qml/common/EditingProviderPopup.qml</file>
+        <file>qml/StorePage.qml</file>
+        <file>qml/common/EditingProductPopup.qml</file>
+        <file>qml/PurchasePage.qml</file>
+        <file>qml/common/AddingPurchaseDataPopup.qml</file>
+        <file>qml/common/CalendarItem.qml</file>
+        <file>qml/ReportsPage.qml</file>
+        <file>qml/common/ProviderPopup.qml</file>
+        <file>qml/common/CategoryPopup.qml</file>
+        <file>qml/common/StorePopup.qml</file>
+        <file>qml/CategoryPage.qml</file>
+        <file>qml/common/CategoryEditingPopup.qml</file>
+        <file>qml/AccountingPage.qml</file>
+        <file>qml/common/AccountingPopup.qml</file>
+        <file>qml/common/AccountingEditingPopup.qml</file>
+    </qresource>
+</RCC>
