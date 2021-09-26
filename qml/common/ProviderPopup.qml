@@ -18,7 +18,7 @@ Popup {
         property string textColor: "black"
         property string errorColor: "red"
         property string errorMessage: "Поле не может быть пустым"
-        property string errorPhoneMessage: "Неверный формат номера"
+        property string errorPhoneMessage: "Номер слишком короткий"
         property string errorEmailMessage: "Неверный формат email"
         property string existsErrorMessage: "Поставщик с таким названием уже существует"
         property double oneSecondPart: 1/2
@@ -63,8 +63,12 @@ Popup {
                 providerPhoneMessageLbl.text    = providerPopupObject.errorMessage
                 providerPhoneMessageLbl.visible = true
                 ++errorCounter
+            } else if(providerPhoneNumberTF.text.length >= 1 && providerPhoneNumberTF.text.length < 13) {
+                providerPhoneMessageLbl.text    = providerPopupObject.errorPhoneMessage
+                providerPhoneMessageLbl.visible = true
+                ++errorCounter
             } else {
-                 providerPhoneMessageLbl.visible = false
+               providerPhoneMessageLbl.visible = false
             }
 
             if(providerEmailTF.text.length === 0) {
