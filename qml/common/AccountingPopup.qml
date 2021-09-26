@@ -20,104 +20,148 @@ Popup {
         property string errorMessage: "Поле не может быть пустым"
         property string errorSelectMessage: "Выберите значение"
         property string errorNullMessage: "Значение не может быть меншье или равным нулю"
+        property string borderColor: "gray"
+        property int borderWidth: 3
         property double oneSecondPart: 1/2
+        property bool isFirstBalanceBeginningValue: false
+        property double tenPercent: 0.1
+        property double fourtyPercent: 0.4
+        property double fiftyPercent: 0.5
+        property double ninetyPercent: 0.9
+        property double balanceBeginningValue: 0
     }
 
-    function addingAccountingData() {
-        if(checkInputData())
-            console.log("OK")
+    function applyFilters() {
+        if(checkSelectedValues()) {
+            selectedElementsRect.visible                = false
+            columnLayout.visible                        = false
+            inputValuesRect.visible                     = true
+            accountingPopupObject.balanceBeginningValue = accountingModel.getBalanceBeginningValue(providerCB.displayText, categoryCB.displayText,
+                                                                                                   productCB.displayText, productUnitCB.displayText)
+
+        }
+    }
+
+    function checkSelectedValues() {
+        var selectedValuesErrorCounter = 0
+
+        if(providerCB.displayText === "" && categoryCB.displayText === "" &&
+                productCB.displayText  === "" && productUnitCB.displayText === "") {
+            providerMessageLbl.text       = accountingPopupObject.errorSelectMessage
+            providerMessageLbl.visible    = true
+            categoryMessageLbl.text       = accountingPopupObject.errorSelectMessage
+            categoryMessageLbl.visible    = true
+            productMessageLbl.text        = accountingPopupObject.errorSelectMessage
+            productMessageLbl.visible     = true
+            productUnitMessageLbl.text    = accountingPopupObject.errorSelectMessage
+            productUnitMessageLbl.visible = true
+
+            selectedValuesErrorCounter += 4
+        } else {
+            if(providerCB.displayText === "") {
+                providerMessageLbl.text    = accountingPopupObject.errorSelectMessage
+                providerMessageLbl.visible = true
+                ++selectedValuesErrorCounter
+            } else {
+                providerMessageLbl.visible = false
+            }
+
+            if(categoryCB.displayText === "") {
+                categoryMessageLbl.text     = accountingPopupObject.errorSelectMessage
+                categoryMessageLbl.visible  = true
+                ++selectedValuesErrorCounter
+            } else {
+                categoryMessageLbl.visible  = false
+            }
+
+            if(productCB.displayText  === "") {
+                productMessageLbl.text    = accountingPopupObject.errorSelectMessage
+                productMessageLbl.visible = true
+                ++selectedValuesErrorCounter
+            } else {
+                productMessageLbl.visible = false
+            }
+
+            if(productUnitCB.displayText === "") {
+                productUnitMessageLbl.text    = accountingPopupObject.errorSelectMessage
+                productUnitMessageLbl.visible = true
+                ++selectedValuesErrorCounter
+            } else {
+                productUnitMessageLbl.visible = false
+            }
+        }
+
+        if(!productsModel.isEqualSelectedValues(providerCB.displayText, categoryCB.displayText,
+                                                productCB.displayText, productUnitCB.displayText)) {
+            notEqualMessageLbl.visible = true
+            ++selectedValuesErrorCounter
+        } else {
+            notEqualMessageLbl.visible = false
+        }
+
+        if(selectedValuesErrorCounter === 0)
+            return true
+        else
+            return false
+    }
+
+    function addAccountingData() {
+        if(checkInputData()) {
+            accountingModel.addAccountingData(providerCB.displayText, categoryCB.displayText, productCB.displayText,
+                                              productUnitCB.displayText, balanceBeginningTf.text, reportDataTf.text, writeOffTf.text)
+            balanceBeginningTf.clear()
+            reportDataTf.clear()
+            writeOffTf.clear()
+
+            accountingPopup.close()
+        }
+
     }
 
     function checkInputData() {
         var errorCounter = 0
-        if(accountingProviderTF.text.length === 0 && productCategoryCB.displayText === "" &&
-           productCB.displayText === "" && productUnitCB.displayText === "" &&
-           accountingBalanceBeginningTF.text.length === 0 && accountingReportDataTF.text.length === 0
-           && accountingWriteOffTF.text.length === 0) {
-
-          accountingProviderMessageLbl.text           = accountingPopupObject.errorMessage
-          accountingProviderMessageLbl.visible        = true
-          accountingProductCategoryMessageLbl.text    = accountingPopupObject.errorSelectMessage
-          accountingProductCategoryMessageLbl.visible = true
-          accountingProductMessageLbl.text            = accountingPopupObject.errorSelectMessage
-          accountingProductMessageLbl.visible         = true
-          accountingProductUnitMessageLbl.text        = accountingPopupObject.errorSelectMessage
-          accountingProductUnitMessageLbl.visible     = true
-          accountingBalanceBeginnigMessageLbl.text    = accountingPopupObject.errorMessage
-          accountingBalanceBeginnigMessageLbl.visible = true
-          accountingReportDataMessageLbl.text         = accountingPopupObject.errorMessage
-          accountingReportDataMessageLbl.visible      = true
-          accountingWriteOffMessageLbl.text           = accountingPopupObject.errorMessage
-          accountingWriteOffMessageLbl.visible        = true
-
-          errorCounter += 7
+        if(balanceBeginningTf.text.length === 0 && reportDataTf.text.length === 0 && writeOffTf.text.length === 0) {
+            balanceBeginningMessageLbl.text    = accountingPopupObject.errorMessage
+            balanceBeginningMessageLbl.visible = true
+            reportDataMessageLbl.text          = accountingPopupObject.errorMessage
+            reportDataMessageLbl.visible       = true
+            writeOffMessageLbl.text            = accountingPopupObject.errorMessage
+            writeOffMessageLbl.visible         = true
         } else {
-            if(accountingProviderTF.text.length === 0) {
-                accountingProviderMessageLbl.text    = accountingPopupObject.errorMessage
-                accountingProviderMessageLbl.visible = true
+            if(balanceBeginningTf.text.length === 0) {
+                balanceBeginningMessageLbl.text    = accountingPopupObject.errorMessage
+                balanceBeginningMessageLbl.visible = true
+                ++errorCounter
+            } else if(parseFloat(balanceBeginningTf.text) <= 0) {
+                balanceBeginningMessageLbl.text    = accountingPopupObject.errorNullMessage
+                balanceBeginningMessageLbl.visible = true
                 ++errorCounter
             } else {
-              accountingProviderMessageLbl.visible = false
+                balanceBeginningMessageLbl.visible = false
             }
 
-            if(productCategoryCB.displayText === "") {
-                accountingProductCategoryMessageLbl.text    = accountingPopupObject.errorSelectMessage
-                accountingProductCategoryMessageLbl.visible = true
+            if(reportDataTf.text.length === 0) {
+                reportDataMessageLbl.text    = accountingPopupObject.errorMessage
+                reportDataMessageLbl.visible = true
+                ++errorCounter
+            } else if(parseFloat(reportDataTf.text) <= 0) {
+                reportDataMessageLbl.text    = accountingPopupObject.errorNullMessage
+                reportDataMessageLbl.visible = true
                 ++errorCounter
             } else {
-                accountingProductCategoryMessageLbl.visible = false
+                reportDataMessageLbl.visible = false
             }
 
-            if(productCB.displayText === "") {
-                accountingProductMessageLbl.text    = accountingPopupObject.errorSelectMessage
-                accountingProductMessageLbl.visible = true
+            if(writeOffTf.text.length === 0) {
+                writeOffMessageLbl.text     = accountingPopupObject.errorMessage
+                writeOffMessageLbl.visible  = true
+                ++errorCounter
+            } else if(parseFloat(writeOffTf.text) <= 0) {
+                writeOffMessageLbl.text     = accountingPopupObject.errorNullMessage
+                writeOffMessageLbl.visible  = true
                 ++errorCounter
             } else {
-                accountingProductMessageLbl.visible = false
-            }
-
-            if(productUnitCB.displayText === "") {
-                accountingProductUnitMessageLbl.text    = accountingPopupObject.errorSelectMessage
-                accountingProductUnitMessageLbl.visible = true
-                ++errorCounter
-            } else {
-                accountingProductUnitMessageLbl.visible = false
-            }
-
-            if(accountingBalanceBeginningTF.text.length === 0) {
-                accountingBalanceBeginnigMessageLbl.text    = accountingPopupObject.errorMessage
-                accountingBalanceBeginnigMessageLbl.visible = true
-                ++errorCounter
-            } else if(parsefloat(accountingBalanceBeginningTF.text) <= 0) {
-                accountingBalanceBeginnigMessageLbl.text    = accountingPopupObject.errorNullMessage
-                accountingBalanceBeginnigMessageLbl.visible = true
-                ++errorCounter
-            } else {
-                accountingBalanceBeginnigMessageLbl.visible = false
-            }
-
-            if(accountingReportDataTF.text.length === 0) {
-                accountingReportDataMessageLbl.text    = accountingPopupObject.errorMessage
-                accountingReportDataMessageLbl.visible = true
-                ++errorCounter
-            } else if(parseFloat(accountingReportDataTF.text) <= 0){
-                accountingReportDataMessageLbl.text    = accountingPopupObject.errorNullMessage
-                accountingReportDataMessageLbl.visible = true
-                ++errorCounter
-            } else {
-                accountingReportDataMessageLbl.visible = false
-            }
-
-            if(accountingWriteOffTF.text.length === 0) {
-                accountingWriteOffMessageLbl.text    = accountingPopupObject.errorMessage
-                accountingWriteOffMessageLbl.visible = true
-                ++errorCounter
-            } else if(parseFloat(accountingWriteOffTF.text) <= 0) {
-                accountingWriteOffMessageLbl.text    = accountingPopupObject.errorNullMessage
-                accountingWriteOffMessageLbl.visible = true
-                ++errorCounter
-            } else {
-                accountingWriteOffMessageLbl.visible = false
+              writeOffMessageLbl.visible  = false
             }
         }
 
@@ -127,205 +171,335 @@ Popup {
             return false
     }
 
+    onClosed: {
+        selectedElementsRect.visible       = true
+        columnLayout.visible               = true
+        inputValuesRect.visible            = false
+        providerMessageLbl.visible         = false
+        categoryMessageLbl.visible         = false
+        productMessageLbl.visible          = false
+        productUnitMessageLbl.visible      = false
+        balanceBeginningMessageLbl.visible = false
+        reportDataMessageLbl.visible       = false
+        writeOffMessageLbl.visible         = false
+    }
 
-            ColumnLayout {
-                anchors.fill: parent
+    RowLayout {
+        id: rowLayout
+        width: parent.width
+        height: parent.height * accountingPopupObject.tenPercent
 
-                Label {
-                    text: "Введите данные для учёта"
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    font.bold: true
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                }
+        ColumnLayout {
+            width: parent.width
+            height: parent.height
 
-                MenuSeparator{Layout.fillWidth: true}
+            Label {
+                text: "Введите данные для учёта"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                font.bold: true
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-                TextField {
-                    id: accountingProviderTF
-                    placeholderText: "Введите название поставщика"
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    selectByMouse: true
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width
-                    horizontalAlignment: TextInput.AlignHCenter
-                }
+            MenuSeparator{Layout.fillWidth: true}
+        }
+    }
 
-                Label {
-                    id: accountingProviderMessageLbl
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    color: accountingPopupObject.errorColor
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                    visible: false
-                }
+    Rectangle {
+        id: selectedElementsRect
+        width: parent.width
+        height: parent.height * accountingPopupObject.fiftyPercent
+        border.color: accountingPopupObject.borderColor
+        border.width: accountingPopupObject.borderWidth
+        anchors.top: rowLayout.bottom
+        Layout.alignment: Qt.AlignHCenter
 
-                Label {
-                    text: "Выберите категорию продукции"
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    font.bold: true
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                }
+        ColumnLayout {
+            id: leftSelectedElementsSide
+            width: parent.width * accountingPopupObject.oneSecondPart
+            height: parent.height
 
-                ComboBox {
-                    id: productCategoryCB
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width
-                }
+            Label {
+                text: "Выберите поставщика"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+                horizontalAlignment: Text.AlignHCenter
+                color: accountingPopupObject.textColor
+            }
 
-                Label {
-                    id: accountingProductCategoryMessageLbl
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    color: accountingPopupObject.errorColor
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                    visible: false
-                }
+            ComboBox {
+                id: providerCB
+                model: providersModel
+                textRole: "provider"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+            }
 
-                Label {
-                    text: "Выберите продукцию"
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    font.bold: true
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                }
+            Label {
+                id: providerMessageLbl
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+                horizontalAlignment: Text.AlignHCenter
+                color: accountingPopupObject.errorColor
+                visible: false
+            }
 
-                ComboBox {
-                    id: productCB
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width
-                }
 
-                Label {
-                    id: accountingProductMessageLbl
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    color: accountingPopupObject.errorColor
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                    visible: false
-                }
+            Label {
+                text: "Выберите продукцию"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+                horizontalAlignment: Text.AlignHCenter
+                color: accountingPopupObject.textColor
+            }
 
-                Label {
-                    text: "Выберите единицу измерения"
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    font.bold: true
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                }
+            ComboBox {
+                id: productCB
+                model: productsModel
+                textRole: "product"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+            }
 
-                ComboBox {
-                    id: productUnitCB
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width
-                }
+            Label {
+                id: productMessageLbl
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+                horizontalAlignment: Text.AlignHCenter
+                color: accountingPopupObject.errorColor
+                visible: false
+            }
+        }
 
-                Label {
-                    id: accountingProductUnitMessageLbl
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    color: accountingPopupObject.errorColor
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                    visible: false
-                }
+        ColumnLayout {
+            id: rightSelectedElementsSide
+            width: parent.width * accountingPopupObject.oneSecondPart
+            height: parent.height
+            anchors.left: leftSelectedElementsSide.right
 
-                TextField {
-                    id: accountingBalanceBeginningTF
-                    placeholderText: "Введите остаток на начало"
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    selectByMouse: true
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width
-                    horizontalAlignment: TextInput.AlignHCenter
-                }
+            Label {
+                text: "Выберите категорию товара"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+                horizontalAlignment: Text.AlignHCenter
+                color: accountingPopupObject.textColor
+            }
 
-                Label {
-                    id: accountingBalanceBeginnigMessageLbl
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    color: accountingPopupObject.errorColor
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                    visible: false
-                }
+            ComboBox {
+                id: categoryCB
+                model: categoriesModel
+                textRole: "product_category"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+            }
 
-                TextField {
-                    id: accountingReportDataTF
-                    placeholderText: "Введите данные отчета"
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    selectByMouse: true
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width
-                    horizontalAlignment: TextInput.AlignHCenter
-                }
+            Label {
+                id: categoryMessageLbl
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+                horizontalAlignment: Text.AlignHCenter
+                color: accountingPopupObject.errorColor
+                visible: false
+            }
 
-                Label {
-                    id: accountingReportDataMessageLbl
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    color: accountingPopupObject.errorColor
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                    visible: false
-                }
-                TextField {
-                    id: accountingWriteOffTF
-                    placeholderText: "Введите данные списания"
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    selectByMouse: true
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width
-                    horizontalAlignment: TextInput.AlignHCenter
-                }
 
-                Label {
-                    id: accountingWriteOffMessageLbl
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    color: accountingPopupObject.errorColor
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
-                    horizontalAlignment: Text.AlignHCenter
-                    visible: false
-                }
+            Label {
+                text: "Выберите единицу измерения"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+                horizontalAlignment: Text.AlignHCenter
+                color: accountingPopupObject.textColor
+            }
 
-                Button {
-                    id: addBtn
-                    text: "Добавить"
-                    font.family: accountingPopupObject.fontFamily
-                    font.pointSize: accountingPopupObject.fontPointSize
-                    highlighted: true
-                    Layout.preferredWidth: parent.width
-                    Layout.alignment: Qt.AlignHCenter
-                    onClicked: addingAccountingData()
+            ComboBox {
+                id: productUnitCB
+                model: productsModel
+                textRole: "product_unit"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+            }
+
+            Label {
+                id: productUnitMessageLbl
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+                horizontalAlignment: Text.AlignHCenter
+                color: accountingPopupObject.errorColor
+                visible: false
+            }
+        }
+    }
+
+    ColumnLayout {
+        id: columnLayout
+        width: parent.width
+        height: parent.height * accountingPopupObject.tenPercent
+        anchors.top: selectedElementsRect.bottom
+
+        Label {
+            id: notEqualMessageLbl
+            text: "Выбраны неверные значения"
+            font.family: accountingPopupObject.fontFamily
+            font.pointSize: accountingPopupObject.fontPointSize
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+            horizontalAlignment: Text.AlignHCenter
+            color: accountingPopupObject.errorColor
+            visible: false
+        }
+
+        Button {
+            id: applyBtn
+            text: "Применить"
+            font.family: accountingPopupObject.fontFamily
+            font.pointSize: accountingPopupObject.fontPointSize
+            highlighted: true
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: parent.width * accountingPopupObject.oneSecondPart
+            onClicked: applyFilters()
+        }
+    }
+
+    Rectangle {
+        id: inputValuesRect
+        width: parent.width
+        height: parent.height * accountingPopupObject.fiftyPercent
+        border.color: accountingPopupObject.borderColor
+        border.width: accountingPopupObject.borderWidth
+        anchors.top: rowLayout.bottom
+        Layout.alignment: Qt.AlignHCenter
+        visible: false
+
+        ColumnLayout {
+            id: inputColumnLayout
+            width: parent.width
+            height: parent.height
+            Layout.alignment: Qt.AlignHCenter
+
+            TextField {
+                id: balanceBeginningTf
+                text: accountingPopupObject.balanceBeginningValue
+                placeholderText: "Введите данные остатка на начало"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                selectByMouse: true
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width
+                horizontalAlignment: TextInput.AlignHCenter
+                readOnly: accountingPopupObject.balanceBeginningValue !== 0? true : false
+            }
+
+            Label {
+                id: balanceBeginningMessageLbl
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width
+                horizontalAlignment: TextInput.AlignHCenter
+                color: accountingPopupObject.errorColor
+                visible: false
+            }
+            TextField {
+                id: reportDataTf
+                placeholderText: "Введите данные отчета"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                selectByMouse: true
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width
+                horizontalAlignment: TextInput.AlignHCenter
+            }
+
+            Label {
+                id: reportDataMessageLbl
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width
+                horizontalAlignment: TextInput.AlignHCenter
+                color: accountingPopupObject.errorColor
+                visible: false
+            }
+
+            TextField {
+                id: writeOffTf
+                placeholderText: "Введите данные списания"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                selectByMouse: true
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width
+                horizontalAlignment: TextInput.AlignHCenter
+            }
+
+            Label {
+                id: writeOffMessageLbl
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width
+                horizontalAlignment: TextInput.AlignHCenter
+                color: accountingPopupObject.errorColor
+                visible: false
+            }
+        }
+
+        RowLayout {
+            width: parent.width
+            height: parent.height
+            anchors.top:  inputColumnLayout.bottom
+
+            Button {
+                id: addBtn
+                text: "Добавить"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                highlighted: true
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.fiftyPercent
+                onClicked: addAccountingData()
+
+            }
+            Button {
+                id: cancelBtn
+                text: "Отмена"
+                font.family: accountingPopupObject.fontFamily
+                font.pointSize: accountingPopupObject.fontPointSize
+                highlighted: true
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: parent.width * accountingPopupObject.fiftyPercent
+                onClicked: {
+                    selectedElementsRect.visible = true
+                    columnLayout.visible         = true
+                    inputValuesRect.visible      = false
                 }
             }
+        }
+    }
 }

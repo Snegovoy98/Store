@@ -117,22 +117,6 @@ Page {
 
         anchors.top: accountingBtnRect.bottom
 
-
-        ListModel {
-            id: accountingModel
-
-            ListElement {
-                provider: "Антонио"
-                category: "Молочные изделия"
-                product: "Молоко"
-                product_unit: "Упаковки"
-                balance_beginning: 100
-                report_data: 50
-                write_off: 10
-                final_balance: 140
-            }
-        }
-
         ListView {
             id: accountingListView
             anchors.fill: parent
@@ -227,7 +211,7 @@ Page {
                     anchors.left: accountingProductUnitHeaderRect.right
 
                     Label {
-                        text: "Категория товара"
+                        text: "Остаток на начало"
                         font.family: accountingObject.fontFamily
                         font.pointSize: accountingObject.titleHeaderPointSize
                         color: accountingObject.color
@@ -321,7 +305,7 @@ Page {
 
                     Label {
                         id: accountingCategoryContentLbl
-                        text: model.category
+                        text: model.product_category
                         font.family: accountingObject.fontFamily
                         font.pointSize: accountingObject.titleHeaderPointSize
                         color: accountingObject.color
@@ -451,9 +435,19 @@ Page {
                     MenuItem {
                         text: "Редактировать"
                         onClicked: {
+                            accountingEditingPopup.provider                    = accontingProviderContentLbl.text
+                            accountingEditingPopup.category                    = accountingCategoryContentLbl.text
+                            accountingEditingPopup.product                     = accountingProductContentLbl.text
+                            accountingEditingPopup.product_unit                = accountingProductUnitContentLbl.text
                             accountingEditingPopup.old_balance_beginning_value = accountingBalanceBeginningContentLbl.text
                             accountingEditingPopup.old_report_data_value       = accountingReportDataContentLbl.text
                             accountingEditingPopup.old_write_off_data_value    = accountingWriteOffContentLbl.text
+                            accountingEditingPopup.isFirstBalanceBeginningValue = accountingModel.isFirstBalanceBeginning(accontingProviderContentLbl.text,
+                                                                                                                          accountingCategoryContentLbl.text,
+                                                                                                                          accountingProductContentLbl.text,
+                                                                                                                          accountingProductUnitContentLbl.text,
+                                                                                                                          accountingBalanceBeginningContentLbl.text,
+                                                                                                                          accountingEditingPopup)
                             accountingEditingPopup.open()
                         }
                     }
@@ -468,6 +462,31 @@ Page {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
             }
+        }
+    }
+
+    Connections {
+        target: providersModel
+
+        function onProviderDataChanged() {
+            accountingModel.updateProviderData()
+        }
+
+    }
+
+    Connections {
+        target: categoriesModel
+
+        function onCategoryChangedValue() {
+            accountingModel.updateCategoryData()
+        }
+    }
+
+    Connections {
+        target: productsModel
+
+        function onProductUpdated() {
+            accountingModel.updateProductData()
         }
     }
 

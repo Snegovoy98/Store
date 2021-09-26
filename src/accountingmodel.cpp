@@ -11,19 +11,19 @@ static void createTable()
         return;
 
     if(!query.exec(
-    "CREATE TABLE IF NOT EXISTS 'Accounting'("
-    "'provider' TEXT NOT NULL, "
-    "'product_category' TEXT NOT NULL, "
-    "'product' TEXT NOT NULL, "
-    "'product_unit' TEXT NOT NULL, "
-    "'balance_beginning' DOUBLE NOT NULL, "
-    "'report_data' DOUBLE NOT NULL, "
-    "'write_off' DOUBLE NOT NULL, "
-    "'final_balance' DOUBLE NOT NULL, "
-    "FOREIGN KEY ('provider') REFERENCES Providers ('provider_name') ON UPDATE CASCADE,"
-    "FOREIGN KEY ('product_category') REFERENCES Categories ('product_category') ON UPDATE CASCADE, "
-    "FOREIGN KEY ('product') REFERENCES Products('product') ON UPDATE CASCADE"
-    ")"))
+                "CREATE TABLE IF NOT EXISTS 'Accounting'("
+                "'provider' TEXT NOT NULL, "
+                "'product_category' TEXT NOT NULL, "
+                "'product' TEXT NOT NULL, "
+                "'product_unit' TEXT NOT NULL, "
+                "'balance_beginning' DOUBLE NOT NULL, "
+                "'report_data' DOUBLE NOT NULL, "
+                "'write_off' DOUBLE NOT NULL, "
+                "'final_balance' DOUBLE NOT NULL, "
+                "FOREIGN KEY ('provider') REFERENCES Providers ('provider_name') ON UPDATE CASCADE,"
+                "FOREIGN KEY ('product_category') REFERENCES Categories ('product_category') ON UPDATE CASCADE, "
+                "FOREIGN KEY ('product') REFERENCES Products('product') ON UPDATE CASCADE"
+                ")"))
         qFatal("Failed create accounting table: %s", qPrintable(query.lastError().text()));
 
 }
@@ -35,7 +35,7 @@ AccountingModel::AccountingModel(QObject *parent)
     createTable();
     setTable(accountingTableName);
     setSort(0, Qt::AscendingOrder);
-    setEditStrategy(QSqlTableModel::OnRowChange);
+    setEditStrategy(QSqlTableModel::OnFieldChange);
     select();
 }
 
@@ -99,8 +99,9 @@ double AccountingModel::getBalanceBeginningValue(const QString &provider, const 
 void AccountingModel::addAccountingData(const QString &provider, const QString &category,
                                         const QString &product, const QString &productUnit,
                                         const double &balanceBeginning, const double &reportData,
-                                        const double &writeOff, const double &finalBalance)
+                                        const double &writeOff)
 {
+    const double &finalBalance {balanceBeginning + reportData - writeOff};
     QSqlRecord accountingRecord = record();
 
     accountingRecord.setValue("provider", provider);
@@ -123,75 +124,62 @@ void AccountingModel::addAccountingData(const QString &provider, const QString &
 
 bool AccountingModel::isFirstBalanceBeginning(const QString &provider, const QString &category,
                                               const QString &product, const QString productUnit,
-                                              const double &balanceBeginnig)
+                                              const double &balanceBeginningValue)
 {
     query.prepare("SELECT balance_beginning FROM Accounting WHERE provider = :provider_value AND product_category = :category_value "
-                  "AND product = :product_value AND product_unit :product_unit_value AND balance_beginning = :balance_beginning_value");
+                  "AND product = :product_value AND product_unit = :product_unit_value");
     query.bindValue(":provider_value", provider);
-    query.bindValue(":caegory_value", category);
+    query.bindValue(":category_value", category);
     query.bindValue(":product_value", product);
     query.bindValue(":product_unit_value", productUnit);
-    query.bindValue(":balance_beginning_value", balanceBeginnig);
 
     if(!query.exec()) {
         qWarning() << "Cannot get balance beginning value: " << lastError().text();
         return false;
     }
 
-    if(query.first())
-        return true;
-    else
-        return false;
+    QSqlRecord  accountingRecord = query.record();
+
+    int balanceBeginningIndex = accountingRecord.indexOf("balance_beginning");
+
+    while(query.first()) {
+        if(balanceBeginningValue == query.value(balanceBeginningIndex))
+            return true;
+        else
+            return false;
+    }
+
+    return false;
 }
 
 
 void AccountingModel::updateAccountingData(const QString &provider, const QString &category,
                                            const QString &product, const QString &productUnit,
-                                           const QSet<double> &newBalanceBeignningValues, const QSet<double> &newReportDataValues,
-                                           const QSet<double> &newWriteOffValues, const QSet<double> &finalBalanceValues,
-                                           const QSet<double> &oldBalanceBeginningValues, const QSet<double> &oldReportDataValues,
-                                           const QSet<double> &oldWriteOffValues)
+                                           const QList<double> &newBalanceBeginningValues, const QList<double> &newReportDataValues,
+                                           const QList<double> &newWriteOffValues, const QList<double> &finalBalanceValues,
+                                           const QList<double> &oldBalanceBeginningValues, const QList<double> &oldReportDataValues,
+                                           const QList<double> &oldWriteOffValues)
 {
     query.prepare("UPDATE Accounting SET balance_beginning = :new_balance_beginning_value, "
-                  "report_data = :new_report_data_value, final_balance = :new_final_balance "
-                  "write_off = :new_write_off_data_value WHERE provider = :provider_value AND product_category = :category_value AND "
-                  "product = :product_value AND product_unit = :prodcut_unit_value AND balance_beginning = :old_balance_beginning_value AND "
+                  "report_data = :new_report_data_value, write_off = :new_write_off_data_value, "
+                  "final_balance = :new_final_balance WHERE provider = :provider_value AND product_category = :category_value AND "
+                  "product = :product_value AND product_unit = :product_unit_value AND balance_beginning = :old_balance_beginning_value AND "
                   "report_data = :old_report_data_value AND write_off = :old_write_off_data_value");
 
 
-       query.bindValue(":provider_value", provider);
-       query.bindValue(":category_value", category);
-       query.bindValue(":product_value", product);
-       query.bindValue(":product_unit_value", productUnit);
 
-       for(auto &newBalanceBeginning : newBalanceBeignningValues) {
-           query.bindValue(":new_balance_beginning_value", newBalanceBeginning);
-
-       }
-
-       for(auto &newReportData : newReportDataValues) {
-           query.bindValue(":new_report_data_value", newReportData);
-       }
-
-       for(auto &newWriteOff : newWriteOffValues) {
-           query.bindValue(":new_write_off_data_value", newWriteOff);
-       }
-
-       for(auto &newFinalBalance : finalBalanceValues) {
-           query.bindValue(":new_final_balance", newFinalBalance);
-       }
-
-       for(auto &oldBalanceBeginning : oldBalanceBeginningValues) {
-           query.bindValue(":old_balance_beginning_value", oldBalanceBeginning);
-       }
-
-       for(auto &oldReportData : oldReportDataValues) {
-           query.bindValue(":old_report_data_value", oldReportData);
-       }
-
-       for(auto &oldWriteOffData : oldWriteOffValues) {
-           query.bindValue(":old_write_off_data_value", oldWriteOffData);
-       }
+    for(int index = 0; index < newBalanceBeginningValues.size(); ++index) {
+        query.bindValue(":provider_value", provider);
+        query.bindValue(":category_value", category);
+        query.bindValue(":product_value", product);
+        query.bindValue(":product_unit_value", productUnit);
+        query.bindValue(":new_balance_beginning_value", newBalanceBeginningValues.at(index));
+        query.bindValue(":new_report_data_value", newReportDataValues.at(index));
+        query.bindValue(":new_write_off_data_value", newWriteOffValues.at(index));
+        query.bindValue(":new_final_balance", finalBalanceValues.at(index));
+        query.bindValue(":old_balance_beginning_value", oldBalanceBeginningValues.at(index));
+        query.bindValue(":old_report_data_value", oldReportDataValues.at(index));
+        query.bindValue(":old_write_off_data_value", oldWriteOffValues.at(index));
 
         if(!query.exec()) {
             qWarning() << "Cannot update accounting data: " << lastError().text();
@@ -199,38 +187,43 @@ void AccountingModel::updateAccountingData(const QString &provider, const QStrin
         }
 
         submit();
+    }
+    select();
 }
 
 
 void AccountingModel::recalculatingAccountingData(const QString &provider, const QString &category,
                                                   const QString &product, const QString &productUnit,
                                                   const double &balanceBeginning, const double &reportData,
-                                                  const double &writeOff)
+                                                  const double &writeOff, const double &oldBalanceBeginningValue)
 {
     double balanceBeginningValue  {balanceBeginning};
     double reportDataValue        {reportData};
     double writeOffValue          {writeOff};
     double finalBalance           {balanceBeginningValue + reportDataValue - writeOffValue};
-    double oldBalanceBeginning    {};
+    double oldBalanceBeginning    {oldBalanceBeginningValue};
     double oldReportData          {};
     double oldWriteOff            {};
-    double temp                   {};
-    QSet<double> balanceBeginningValues;
-    QSet<double> reportDataValues;
-    QSet<double> writeOffValues;
-    QSet<double> finalBalanceValues;
-    QSet<double> oldBalanceBeginningValues;
-    QSet<double> oldReportDataValues;
-    QSet<double> oldWriteOffValues;
+    double temp                   {finalBalance};
+    bool isNextEditElem          {false};
+    QList<double> balanceBeginningValues;
+    QList<double> reportDataValues;
+    QList<double> writeOffValues;
+    QList<double> finalBalanceValues;
+    QList<double> oldBalanceBeginningValues;
+    QList<double> oldReportDataValues;
+    QList<double> oldWriteOffValues;
 
     query.prepare("SELECT balance_beginning, report_data, write_off FROM Accounting "
                   "WHERE provider = :provider_value AND product_category = :category AND product = :product_value AND "
                   "product_unit = :product_unit_value");
 
     query.bindValue(":provider_value", provider);
-    query.bindValue(":ctaegory", category);
+    query.bindValue(":category", category);
     query.bindValue(":product_value", product);
     query.bindValue(":product_unit_value", productUnit);
+
+    query.exec();
 
     QSqlRecord accountingRecord = query.record();
 
@@ -238,33 +231,36 @@ void AccountingModel::recalculatingAccountingData(const QString &provider, const
     int reportDataIndex       = accountingRecord.indexOf("report_data");
     int writeOffIndex         = accountingRecord.indexOf("write_off");
 
-    while(query.next()) {
-        if(query.first()) {
-            balanceBeginningValues.insert(balanceBeginningValue);
-            reportDataValues.insert(reportDataValue);
-            writeOffValues.insert(writeOffValue);
-            finalBalanceValues.insert(finalBalance);
-            temp = finalBalance;
-            oldBalanceBeginning = query.value(balanceBeginningIndex).toDouble();
-            oldReportData       = query.value(reportDataIndex).toDouble();
-            oldWriteOff         = query.value(writeOffIndex).toDouble();
-            oldBalanceBeginningValues.insert(oldBalanceBeginning);
-            oldReportDataValues.insert(oldReportData);
-            oldWriteOffValues.insert(oldWriteOff);
-        } else {
-            oldBalanceBeginning = query.value(balanceBeginningIndex).toDouble();
-            oldReportData       = query.value(reportDataIndex).toDouble();
-            oldWriteOff         = query.value(writeOffIndex).toDouble();
+    while (query.next()) {
+        if(oldBalanceBeginning == query.value(balanceBeginningIndex).toDouble()) {
+            balanceBeginningValues.push_back(balanceBeginningValue);
+            reportDataValues.push_back(reportDataValue);
+            writeOffValues.push_back(writeOffValue);
+            finalBalanceValues.push_back(finalBalance);
+            oldBalanceBeginningValues.push_back(oldBalanceBeginningValue);
+            oldReportData = query.value(reportDataIndex).toDouble();
+            oldWriteOff   = query.value(writeOffIndex).toDouble();
+            oldReportDataValues.push_back(oldReportData);
+            oldWriteOffValues.push_back(oldWriteOff);
+            isNextEditElem = true;
+        } else if(isNextEditElem) {
             balanceBeginningValue = temp;
-            finalBalance = balanceBeginningValue + oldReportData - oldWriteOff;
+            reportDataValue = query.value(reportDataIndex).toDouble();
+            writeOffValue   = query.value(writeOffIndex).toDouble();
+            finalBalance = balanceBeginningValue + reportDataValue - writeOffValue;
             temp = finalBalance;
-            balanceBeginningValues.insert(balanceBeginningValue);
-            reportDataValues.insert(oldReportData);
-            writeOffValues.insert(oldWriteOff);
-            finalBalanceValues.insert(finalBalance);
-            oldBalanceBeginningValues.insert(oldBalanceBeginning);
-            oldReportDataValues.insert(oldReportData);
-            oldWriteOffValues.insert(oldWriteOff);
+            oldBalanceBeginning = query.value(balanceBeginningIndex).toDouble();
+            oldReportData       = reportDataValue;
+            oldWriteOff         = writeOffValue;
+            balanceBeginningValues.push_back(balanceBeginningValue);
+            reportDataValues.push_back(reportDataValue);
+            writeOffValues.push_back(writeOffValue);
+            finalBalanceValues.push_back(finalBalance);
+            oldBalanceBeginningValues.push_back(oldBalanceBeginning);
+            oldReportDataValues.push_back(oldReportData);
+            oldWriteOffValues.push_back(oldWriteOff);
+        } else {
+            continue;
         }
     }
 

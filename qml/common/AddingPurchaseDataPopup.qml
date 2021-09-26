@@ -43,7 +43,7 @@ Popup {
     function checkInputData() {
         var errorCounter = 0
         if(selectedDate.text === "Выберите дату закупки" && providerCB.currentText === "" &&
-           productPurchaseTF.text.length === 0 && productUnitPurchaseTF.text.length === 0) {
+                productPurchaseTF.text.length === 0 && productUnitPurchaseTF.text.length === 0) {
             selectedDate.color                  = addingPurchaseDataObject.errorColor
             providerPurchaseMessageLbl.text     = addingPurchaseDataObject.errorProviderMessage
             providerPurchaseMessageLbl.visible  = true
@@ -73,7 +73,7 @@ Popup {
                 productPurchaseMessageLbl.visible = true
                 ++errorCounter
             } else {
-               productPurchaseMessageLbl.visible = false
+                productPurchaseMessageLbl.visible = false
             }
 
             if(weightPurchaseTF.text.length === 0) {
@@ -92,7 +92,6 @@ Popup {
     }
 
     onClosed: {
-        selectedDate.visible               = false
         providerPurchaseMessageLbl.visible = false
         productPurchaseMessageLbl.visible  = false
         weightMessageLbl.visible      = false
@@ -142,7 +141,7 @@ Popup {
             font.family: addingPurchaseDataObject.fontFamily
             font.pointSize: addingPurchaseDataObject.fontPointSize
             Layout.alignment: Qt.AlignHCenter
-           // onSelectTextByMouseChanged: purchaseFilterModel.setProviderData(providerCB.displayText)
+            onSelectTextByMouseChanged: purchaseFilterModel.setProviderData(providerCB.displayText)
         }
 
         Label {
@@ -180,6 +179,8 @@ Popup {
             visible: false
             Layout.alignment: Qt.AlignHCenter
             model: purchaseFilterModel
+
+            ScrollBar.vertical: lvVerticalSB
 
             header: Rectangle {
                 width: contentLV.width
@@ -229,7 +230,7 @@ Popup {
 
                     Label {
                         id: productDataLbl
-                        text: model.product
+                        text: providerCB.displayText === model.provider? model.product : ""
                         font.family: addingPurchaseDataObject.fontFamily
                         font.pointSize: addingPurchaseDataObject.fontPointSize
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -244,7 +245,7 @@ Popup {
 
                     Label {
                         id: priceDataLbl
-                       // text: model.price
+                        text: providerCB.displayText === model.provider? model.price: ""
                         font.family: addingPurchaseDataObject.fontFamily
                         font.pointSize: addingPurchaseDataObject.fontPointSize
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -258,10 +259,11 @@ Popup {
                         addingPurchaseDataObject.product_value = productDataLbl.text
                         addingPurchaseDataObject.price_value   = priceDataLbl.text
                         productPurchaseTF.text = addingPurchaseDataObject.product_value + ", " + addingPurchaseDataObject.price_value
+                        contentLV.visible = false
                     }
                 }
             }
-    }
+        }
 
         Label {
             id: productPurchaseMessageLbl
@@ -312,4 +314,13 @@ Popup {
         }
     }
 
+    ScrollBar {
+        id: lvVerticalSB
+        hoverEnabled: true
+        active: hovered || pressed
+        size: contentLV.height
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+    }
 }

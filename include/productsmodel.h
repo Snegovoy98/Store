@@ -36,6 +36,9 @@ public:
 
     Q_INVOKABLE void updateProductValue();
 
+    Q_INVOKABLE bool isEqualSelectedValues(const QString &provider, const QString &category,
+                                           const QString &product, const QString productUnit);
+
 signals:
     void productDeleted();
     void productUpdated();

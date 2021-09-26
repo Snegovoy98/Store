@@ -256,7 +256,7 @@ Page {
                     border.color: purchaseObject.borderColor
 
                     Label {
-                        text: "Единица измерения"
+                        text: "кг/л/шт"
                         font.family: purchaseObject.fontFamily
                         font.pointSize: purchaseObject.fontPointSize
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -297,7 +297,7 @@ Page {
                      border.color: purchaseObject.borderColor
 
                      Label {
-                         text: model.date
+                         text: model.purchase_date
                          font.family: purchaseObject.fontFamily
                          font.pointSize: purchaseObject.fontPointSize
                          anchors.horizontalCenter: parent.horizontalCenter
@@ -369,7 +369,7 @@ Page {
                      border.color: purchaseObject.borderColor
 
                      Label {
-                         text: model.product_unit
+                         text: model.weight
                          font.family: purchaseObject.fontFamily
                          font.pointSize: purchaseObject.fontPointSize
                          anchors.horizontalCenter: parent.horizontalCenter
@@ -387,7 +387,7 @@ Page {
                      border.color: purchaseObject.borderColor
 
                      Label {
-                         text: model.product_sum
+                         text: model.delivered_goods
                          font.family: purchaseObject.fontFamily
                          font.pointSize: purchaseObject.fontPointSize
                          anchors.horizontalCenter: parent.horizontalCenter

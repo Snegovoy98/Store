@@ -133,3 +133,24 @@ void ProductsModel::updateProductValue()
 {
     submitAll();
 }
+
+bool ProductsModel::isEqualSelectedValues(const QString &provider, const QString &category,
+                                            const QString &product, const QString productUnit)
+{
+    query.prepare("SELECT provider FROM Products WHERE provider = :provider_value AND"
+                  " category = :category_value AND product = :product_value AND product_unit = :product_unit_value");
+    query.bindValue(":provider_value", provider);
+    query.bindValue(":category_value", category);
+    query.bindValue(":product_value", product);
+    query.bindValue(":product_unit_value", productUnit);
+
+    if(!query.exec()) {
+        qWarning() << "Cannot select data from table: " << lastError().text();
+        return false;
+    }
+
+    if(query.first())
+        return true;
+    else
+        return false;
+}

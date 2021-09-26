@@ -39,7 +39,7 @@ Page {
 
     function addingReportsData() {
         if(checkSelectData()) {
-            reportsModel.addReportData(enteryDateLbl.text, finalDateLbl.text, reportsModel.getProviderStatistic(enteryDateLbl.text, finalDateLbl.text))
+            reportsModel.addReportData(enteryDateLbl.text, finalDateLbl.text, purchaseModel.getProvidersStatistic(enteryDateLbl.text, finalDateLbl.text))
             calendarItem.manualCheckDate = ""
             calendarItem.rangeDate       = ""
         }
@@ -224,17 +224,6 @@ Page {
                     reportsRoot.height * reportsObject.fiftyPercent : reportsRoot.height * reportsObject.sixtySevenPercent
         anchors.top: selectedDateRect.bottom
 
-        ListModel {
-            id: reportsModel
-
-            ListElement {
-                entery_date: "20.08.2021"
-                final_date: "27.08.2021"
-                provider: "Константин"
-                pruchase_sum: 10000
-            }
-        }
-
         ListView {
             id: reportsListView
             anchors.fill: parent
@@ -392,7 +381,7 @@ Page {
                     border.color: reportsObject.borderColor
 
                     Label {
-                        text: model.pruchase_sum
+                        text: model.purchase_sum
                         font.family: reportsObject.fontFamily
                         font.pointSize: reportsObject.fontPointSize
                         color: reportsObject.textColor

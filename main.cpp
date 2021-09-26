@@ -7,6 +7,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 
+
 #include "include/accountingmodel.h"
 #include "include/categoriesmodel.h"
 #include "include/productsmodel.h"
@@ -63,13 +64,13 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    std::unique_ptr<AccountingModel> accounting            = std::make_unique<AccountingModel>();
-    std::unique_ptr<CategorisModel> categoris              = std::make_unique<CategorisModel>();
-    std::unique_ptr<ProvidersModel> providers              = std::make_unique<ProvidersModel>();
-    std::unique_ptr<ProductsModel> products                = std::make_unique<ProductsModel>();
-    std::unique_ptr<PurchaseModel> purchase                = std::make_unique<PurchaseModel>();
-    std::unique_ptr<PurchaseFilterProxyModel> purchaseFPM  = std::make_unique<PurchaseFilterProxyModel>();
-    std::unique_ptr<ReportsModel>  reports                 = std::make_unique<ReportsModel>();
+    std::unique_ptr<AccountingModel> accounting               = std::make_unique<AccountingModel>();
+    std::unique_ptr<CategorisModel> categoris                 = std::make_unique<CategorisModel>();
+    std::unique_ptr<ProvidersModel> providers                 = std::make_unique<ProvidersModel>();
+    std::unique_ptr<ProductsModel> products                   = std::make_unique<ProductsModel>();
+    std::unique_ptr<PurchaseModel> purchase                   = std::make_unique<PurchaseModel>();
+    std::unique_ptr<PurchaseFilterProxyModel> purchaseFPM     = std::make_unique<PurchaseFilterProxyModel>();
+    std::unique_ptr<ReportsModel>  reports                    = std::make_unique<ReportsModel>();
 
     purchaseFPM->setSourceModel(products.get());
 

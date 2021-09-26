@@ -10,9 +10,15 @@ Popup {
     modal: true
     focus: true
 
+    property string provider: ""
+    property string category: ""
+    property string product: ""
+    property string product_unit: ""
     property double old_balance_beginning_value: 0
     property double old_report_data_value: 0
     property double old_write_off_data_value: 0
+    property bool isFirstBalanceBeginningValue: false
+    property int position: 0
 
     QtObject {
         id: accountingObject
@@ -26,11 +32,18 @@ Popup {
         property string borderColor: "#5D76CB"
         property int borderWidth: 1
         property double oneSecondPart: 1/2
+
     }
 
     function editingAccountingData() {
-            if(checkInputData())
-                console.log("OK")
+            if(checkInputData()) {
+                accountingModel.recalculatingAccountingData(provider, category, product, product_unit, balanceBeginningEditingTF.text,
+                                                            reportDataEditingTF.text, writeOffEditingTF.text, old_balance_beginning_value, position)
+                balanceBeginningEditingTF.clear()
+                reportDataEditingTF.clear()
+                writeOffEditingTF.clear()
+                root.close()
+            }
     }
 
     function checkInputData() {
@@ -126,6 +139,7 @@ Popup {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: parent.width
                 horizontalAlignment: TextInput.AlignHCenter
+                readOnly: isFirstBalanceBeginningValue? false: true
             }
 
             Label {

@@ -27,7 +27,7 @@ ReportsModel::ReportsModel(QObject *parent)
     createTable();
     setTable(reportsTableName);
     setSort(0, Qt::AscendingOrder);
-    setEditStrategy(QSqlTableModel::OnManualSubmit);
+    setEditStrategy(QSqlTableModel::OnRowChange);
     select();
 }
 
@@ -57,18 +57,20 @@ void ReportsModel::addReportData(const QString &enteryDate, const QString &final
 {
     QSqlRecord reportsRecord = record();
 
+
+
     for(auto start = providerData.cbegin(); start != providerData.cend(); ++start) {
         reportsRecord.setValue("entery_date", enteryDate);
         reportsRecord.setValue("final_date", finalDate);
         reportsRecord.setValue("provider", start.key());
         reportsRecord.setValue("purchase_sum", start.value());
-    }
 
-    if(!insertRecord(rowCount(), reportsRecord)) {
-        qWarning() << "Cannot add reports data to table: " << lastError().text();
-        return;
+        if(!insertRecord(rowCount(), reportsRecord)) {
+            qWarning() << "Cannot add reports data to table: " << lastError().text();
+            return;
+        }
+        submit();
     }
-    submit();
 }
 
 void ReportsModel::removeReportData(const int &index)

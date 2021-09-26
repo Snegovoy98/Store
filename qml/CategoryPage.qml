@@ -85,7 +85,6 @@ Page {
 
         delegate: categoryComponent
 
-
         ScrollBar {
             id: categoryVerticalSB
             hoverEnabled: true
@@ -95,7 +94,6 @@ Page {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
         }
-
     }
 
     Component {
@@ -161,5 +159,4 @@ Page {
         y: parent.height * categoryObject.oneSecondPart - height * categoryObject.oneSecondPart
         onOkClicked: categoriesModel.removeCategory(categoryObject.chooseIndex)
     }
-
 }
