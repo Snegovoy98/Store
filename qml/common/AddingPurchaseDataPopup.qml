@@ -58,6 +58,7 @@ Popup {
                 ++errorCounter
             } else {
                 selectedDate.color = addingPurchaseDataObject.textColor
+                selectedDate.text  = ""
             }
 
             if(providerCB.currentText === "") {

@@ -446,8 +446,7 @@ Page {
                                                                                                                           accountingCategoryContentLbl.text,
                                                                                                                           accountingProductContentLbl.text,
                                                                                                                           accountingProductUnitContentLbl.text,
-                                                                                                                          accountingBalanceBeginningContentLbl.text,
-                                                                                                                          accountingEditingPopup)
+                                                                                                                          accountingBalanceBeginningContentLbl.text)
                             accountingEditingPopup.open()
                         }
                     }

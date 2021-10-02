@@ -106,9 +106,6 @@ Popup {
         balanceBeginningEditingMessageLbl.visible  = false
         reportDataEditingMessageLbl.visible = false
         writeOffEditingMessageLbl.visible  = false
-        balanceBeginningEditingTF.text = old_balance_beginning_value
-        reportDataEditingTF.text       = old_report_data_value
-        writeOffEditingTF.text         = old_write_off_data_value
     }
 
     Rectangle {
