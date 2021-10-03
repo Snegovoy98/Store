@@ -38,4 +38,5 @@ HEADERS += \
     include/purchasemodel.h \
     include/reportsmodel.h \
 
+ICON = store.ico
 

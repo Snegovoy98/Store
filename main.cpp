@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QtQml>
+#include <QIcon>
 
 #include <QStandardPaths>
 #include <QSqlDatabase>
@@ -55,6 +56,8 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+    QIcon icon(":/resources/logo/store.ico");
+    app.setWindowIcon(icon);
     app.setOrganizationName("store");
     app.setOrganizationDomain("store");
     QQuickStyle::setStyle("Universal");
