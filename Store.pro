@@ -38,5 +38,11 @@ HEADERS += \
     include/purchasemodel.h \
     include/reportsmodel.h \
 
+
 ICON = store.ico
 
+RC_ICONS = store.ico
+
+VERSION = 1.1.1
+QMAKE_TARGET_COMPANY = Store LLC
+QMAKE_TARGET_PRODUCT = Store
