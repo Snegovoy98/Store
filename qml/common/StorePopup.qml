@@ -26,11 +26,9 @@ Popup {
     function addingStoreData() {
         if(checkInputData()) {
             productsModel.addProductData(providerCB.displayText, categoryCB.displayText,
-                                         productTF.text, parseFloat(priceTF.text), productUnitTF.text)
+                                         productTF.text, parseFloat(priceTF.text), productUnitCB.displayText)
             productTF.clear()
             priceTF.clear()
-            productUnitTF.clear()
-
             storeRoot.close()
         }
     }
@@ -38,7 +36,7 @@ Popup {
     function checkInputData() {
         var errorCounter = 0
         if(providerCB.displayText === "" && categoryCB.displayText === "" &&
-           productTF.text.length === 0 && productUnitTF.text.length === 0 &&
+           productTF.text.length === 0 && productUnitCB.displayText === "" &&
            priceTF.text.length === 0) {
             providerStoreMessageLbl.text        = storeObject.errorSelectMessage
             providerStoreMessageLbl.visible     = true
@@ -78,8 +76,8 @@ Popup {
                 productStoreMessageLbl.visible = false
             }
 
-            if(productUnitTF.text.length === 0) {
-                productUnitStoreMessageLbl.text     = storeObject.errorMessage
+            if(productUnitCB.displayText === "") {
+                productUnitStoreMessageLbl.text     = storeObject.errorSelectMessage
                 productUnitStoreMessageLbl.visible  = true
                 ++errorCounter
             } else {
@@ -196,6 +194,7 @@ Popup {
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredWidth: parent.width
             horizontalAlignment: TextInput.AlignHCenter
+            validator: RegExpValidator{regExp: /[А-Яа-я]+/}
         }
 
         Label {
@@ -209,15 +208,22 @@ Popup {
             visible: false
         }
 
-        TextField {
-            id: productUnitTF
-            placeholderText: "Введите единицу измерения"
+        Label {
+            text: "Выберите единицу измерения"
             font.family: storeObject.fontFamily
             font.pointSize: storeObject.fontPointSize
-            selectByMouse: true
+            font.bold: true
+            color: storeObject.textColor
+        }
+
+        ComboBox {
+            id: productUnitCB
+            textRole: "unit"
+            model: unitsModel
+            font.family: storeObject.fontFamily
+            font.pointSize: storeObject.fontPointSize
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredWidth: parent.width
-            horizontalAlignment: TextInput.AlignHCenter
         }
 
         Label {
@@ -240,6 +246,7 @@ Popup {
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredWidth: parent.width
             horizontalAlignment: TextInput.AlignHCenter
+            validator: RegExpValidator {regExp: /^([0-9]+\.[0-9]+)$/}
         }
 
         Label {

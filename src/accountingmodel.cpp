@@ -285,3 +285,8 @@ void AccountingModel::updateProductData()
 {
     submitAll();
 }
+
+void AccountingModel::updateUnitData()
+{
+    submitAll();
+}

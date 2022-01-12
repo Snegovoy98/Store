@@ -84,6 +84,7 @@ Popup {
                 Layout.preferredWidth: parent.width
                 selectByMouse: true
                 horizontalAlignment: TextInput.AlignHCenter
+                validator: RegExpValidator{regExp: /[А-Яа-я]+/}
             }
 
             Label {

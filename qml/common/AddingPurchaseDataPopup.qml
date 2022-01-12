@@ -163,6 +163,7 @@ Popup {
             Layout.preferredWidth: parent.width
             selectByMouse: true
             horizontalAlignment: TextInput.AlignHCenter
+            validator: RegExpValidator {regExp: /[А-Яа-я]+/}
             onTextChanged: {
                 purchaseFilterModel.setProductData(productPurchaseTF.text)
 
@@ -285,6 +286,7 @@ Popup {
             Layout.preferredWidth: parent.width
             selectByMouse: true
             horizontalAlignment: TextInput.AlignHCenter
+            validator: RegExpValidator{regExp: /^([0-9]+\.[0-9]+)$/}
         }
 
         Label {

@@ -1,10 +1,10 @@
 #include <QSqlTableModel>
 #include <QSqlRelationalTableModel>
 #include <QSqlQuery>
-
-#include <QDebug>
 #include <QSqlError>
 #include <QSqlRecord>
+
+#include <QDebug>
 
 class CategorisModel : public QSqlTableModel
 {

@@ -3,8 +3,7 @@
 #include <QSqlError>
 #include <QSqlRecord>
 
-#include<QDebug>
-
+#include <QDebug>
 
 class PurchaseModel : public QSqlTableModel
 {

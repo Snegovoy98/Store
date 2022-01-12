@@ -80,6 +80,13 @@ ApplicationWindow {
                     MenuSeparator{}
 
                     MenuItem {
+                        text: "Добавить ед. измерения"
+                        onClicked: unitPopup.open()
+                    }
+
+                    MenuSeparator{}
+
+                    MenuItem {
                         text: "Добавить продукцию"
                         onClicked: storePopup.open()
                     }
@@ -161,6 +168,12 @@ ApplicationWindow {
 
     CategoryPopup {
         id: categoryPopup
+        x: parent.width * mainWindowObject.oneSecondPart - width * mainWindowObject.oneSecondPart
+        y: parent.height * mainWindowObject.oneSecondPart  - height * mainWindowObject.oneSecondPart
+    }
+
+    UnitPopup {
+        id: unitPopup
         x: parent.width * mainWindowObject.oneSecondPart - width * mainWindowObject.oneSecondPart
         y: parent.height * mainWindowObject.oneSecondPart  - height * mainWindowObject.oneSecondPart
     }

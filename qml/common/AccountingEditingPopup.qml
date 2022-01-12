@@ -137,6 +137,7 @@ Popup {
                 Layout.preferredWidth: parent.width
                 horizontalAlignment: TextInput.AlignHCenter
                 readOnly: isFirstBalanceBeginningValue? false: true
+                validator: RegExpValidator{regExp: /^([0-9]+\.[0-9]+)$/}
             }
 
             Label {
@@ -168,6 +169,7 @@ Popup {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: parent.width
                 horizontalAlignment: TextInput.AlignHCenter
+                validator: RegExpValidator{regExp: /^([0-9]+\.[0-9]+)$/}
             }
 
             Label {
@@ -199,6 +201,7 @@ Popup {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: parent.width
                 horizontalAlignment: TextInput.AlignHCenter
+                validator: RegExpValidator{regExp: /^([0-9]+\.[0-9]+)$/}
             }
 
             Label {

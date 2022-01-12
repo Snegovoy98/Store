@@ -16,6 +16,7 @@
 #include "include/purchasemodel.h"
 #include "include/purchasefilterproxymodel.h"
 #include "include/reportsmodel.h"
+#include "include/unitsmodel.h"
 
 
 
@@ -74,6 +75,7 @@ int main(int argc, char *argv[])
     std::unique_ptr<PurchaseModel> purchase                   = std::make_unique<PurchaseModel>();
     std::unique_ptr<PurchaseFilterProxyModel> purchaseFPM     = std::make_unique<PurchaseFilterProxyModel>();
     std::unique_ptr<ReportsModel>  reports                    = std::make_unique<ReportsModel>();
+    std::unique_ptr<UnitsModel> units                         = std::make_unique<UnitsModel>();
 
     purchaseFPM->setSourceModel(products.get());
 
@@ -84,6 +86,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("purchaseModel", purchase.get());
     engine.rootContext()->setContextProperty("purchaseFilterModel", purchaseFPM.get());
     engine.rootContext()->setContextProperty("reportsModel", reports.get());
+    engine.rootContext()->setContextProperty("unitsModel", units.get());
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

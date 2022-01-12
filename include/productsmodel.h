@@ -1,10 +1,9 @@
 #include <QSqlTableModel>
 #include <QSqlQuery>
-
-#include <QDebug>
 #include <QSqlError>
 #include <QSqlRecord>
 
+#include <QDebug>
 
 class ProductsModel : public QSqlTableModel
 {

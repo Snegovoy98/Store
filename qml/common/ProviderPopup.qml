@@ -114,6 +114,7 @@ Popup {
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredWidth: parent.width
             horizontalAlignment: TextInput.Center
+            validator: RegularExpressionValidator {regularExpression: /[А-Яа-яa-zA-Z]+/}
         }
 
         Label {

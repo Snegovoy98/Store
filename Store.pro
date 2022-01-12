@@ -14,7 +14,8 @@ SOURCES += \
    src/productsmodel.cpp \
    src/providersmodel.cpp \
    src/purchasefilterproxymodel.cpp \
-   src/reportsmodel.cpp
+   src/reportsmodel.cpp \
+   src/unitsmodel.cpp \ 
 
 RESOURCES += qml.qrc
 
@@ -37,6 +38,7 @@ HEADERS += \
     include/purchasefilterproxymodel.h \
     include/purchasemodel.h \
     include/reportsmodel.h \
+    include/unitsmodel.h \
 
 
 ICON = store.ico

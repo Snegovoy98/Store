@@ -290,6 +290,13 @@ Page {
             productsModel.updateProductValue()
         }
     }
+
+    Connections {
+        target: unitsModel
+        function onUnitChangedValue() {
+            productsModel.updateProductValue()
+        }
+    }
 }
 
 

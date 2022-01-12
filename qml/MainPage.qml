@@ -15,18 +15,23 @@ Page {
         property string fontFamily: "Decorative"
         property int fontPointSize: 12
         property int imgParamsWidthHeight: 90
+        property double oneSecondPart: 1/2
         property double oneThirdPart: 1/3
         property double oneTwentyPart: 1/20
+        property int minMainWindowHeigt: 480
+        property int sevenHundredFourtyWindowHeight: 740
     }
 
     Grid {
         id: mainPageGrid
         anchors.fill: parent
+        columns: 3
 
         Rectangle {
             id: purchaseMainPageRect
             width: mainPageRoot.width * mainPageObject.oneThirdPart
-            height: mainPageRoot.height * mainPageObject.oneTwentyPart
+            height: mainPageRoot.height >= mainPageObject.minMainWindowHeigt && mainPageRoot.height <= mainPageObject.onSecondPart?
+                        mainPageRoot.height * mainPageObject.oneThirdPart :  mainPageRoot.height * mainPageObject.oneSecondPart
 
             Column {
                 width: parent.width
@@ -63,7 +68,8 @@ Page {
         Rectangle {
             id: categoriesMainPageRect
             width: mainPageRoot.width * mainPageObject.oneThirdPart
-            height: mainPageRoot.width * mainPageObject.oneTwentyPart
+            height: mainPageRoot.height >= mainPageObject.minMainWindowHeigt && mainPageRoot.height <= mainPageObject.onSecondPart?
+                        mainPageRoot.height * mainPageObject.oneThirdPart :  mainPageRoot.height * mainPageObject.oneSecondPart
 
             Column {
                 width: parent.width
@@ -100,7 +106,8 @@ Page {
         Rectangle {
             id: accountingMainPageRect
             width: mainPageRoot.width * mainPageObject.oneThirdPart
-            height: mainPageRoot.height * mainPageObject.oneTwentyPart
+            height: mainPageRoot.height >= mainPageObject.minMainWindowHeigt && mainPageRoot.height <= mainPageObject.onSecondPart?
+                        mainPageRoot.height * mainPageObject.oneThirdPart :  mainPageRoot.height * mainPageObject.oneSecondPart
 
             Column {
                 width: parent.width
@@ -133,9 +140,47 @@ Page {
                 }
             }
         }
+
+        Rectangle {
+            id: unitsMainPageRect
+            width: mainPageRoot.width * mainPageObject.oneThirdPart
+            height: mainPageRoot.height >= mainPageObject.minMainWindowHeigt && mainPageRoot.height <= mainPageObject.onSecondPart?
+                        mainPageRoot.height * mainPageObject.oneThirdPart :  mainPageRoot.height * mainPageObject.oneSecondPart
+
+            Column {
+                width: parent.width
+                height: parent.height
+
+                Image {
+                    id: unitsImage
+                    source: "../resources/button_img/units.png"
+                    width: mainPageObject.imgParamsWidthHeight
+                    height: mainPageObject.imgParamsWidthHeight
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            mainTabButton.text      = "Единицы измерения"
+                            mainTabButton.width     = window.height * mainPageObject.oneThirdPart
+                            stack.currentItem.title = mainTabButton.text
+                            unitsPage.visible       = true
+                        }
+                    }
+                }
+
+                Label {
+                    text: "Единицы измерения"
+                    font.family: mainPageObject.fontFamily
+                    font.pointSize: mainPageObject.fontPointSize
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+            }
+        }
     }
 
     PurchasePage {id: purchasePage; width: window.width; height: window.height; visible: false}
     CategoryPage {id:categoryPage; width: window.width; height: window.height; visible: false }
     AccountingPage{id: accountingPage; width: window.width; height: window.height; visible: false}
+    UnitsPage{id: unitsPage; width: window.width; height: window.height; visible: false}
 }
