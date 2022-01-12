@@ -78,6 +78,7 @@ Popup {
             Layout.preferredWidth: parent.width
             Layout.alignment: Qt.AlignHCenter
             horizontalAlignment: TextInput.AlignHCenter
+            validator: RegExpValidator{regExp: /[А-Яа-я]+/}
         }
 
         Label {

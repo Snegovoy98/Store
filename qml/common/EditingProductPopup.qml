@@ -15,17 +15,13 @@ Popup {
     property string provider: ""
     property string new_product_value: ""
     property double new_price_value: 0
-    property string new_product_unit_value: ""
     property string old_product_value: ""
     property double old_price_value: 0
-    property string old_product_unit_value: ""
-
 
     function editingProductData() {
         if(checkInputData()) {
             new_product_value      = productEditingTf.text
             new_price_value        = priceEditingTf.text
-            new_product_unit_value = productUnitEditingTf.text
             okClicked()
             productEditingRoot.close()
         }
@@ -33,14 +29,11 @@ Popup {
 
     function checkInputData() {
         var errorCounter = 0
-        if(productEditingTf.text.length === 0 && priceEditingTf.text.length === 0 &&
-                productUnitEditingTf.text.length === 0) {
+        if(productEditingTf.text.length === 0 && priceEditingTf.text.length === 0) {
             productEditingMessageLbl.text    = productEditingObject.errorMessage
             priceEditingMessageLbl.text      = productEditingObject.errorMessage
-            productUnitMessageLbl.text       = productEditingObject.errorMessage
             productEditingMessageLbl.visible = true
             priceEditingMessageLbl.visible   = true
-            productUnitMessageLbl.visible    = true
             errorCounter += 3
         } else {
             if(productEditingTf.text.length === 0) {
@@ -61,14 +54,6 @@ Popup {
                 ++errorCounter
             } else {
                 priceEditingMessageLbl.visible   = false
-            }
-
-            if(productUnitEditingTf.text.length === 0) {
-               productUnitMessageLbl.text       = productEditingObject.errorMessage
-               productUnitMessageLbl.visible    = true
-               ++errorCounter
-            } else {
-                productUnitMessageLbl.visible    = false
             }
         }
 
@@ -98,7 +83,6 @@ Popup {
         productUnitMessageLbl.visible    = false;
         productEditingTf.text            = old_product_value
         priceEditingTf.text              = old_price_value
-        productUnitEditingTf.text        = old_product_unit_value
     }
 
     Rectangle {
@@ -130,6 +114,7 @@ Popup {
                 Layout.alignment: Qt.AlignHCenter
                 selectByMouse: true
                 horizontalAlignment: TextInput.Center
+                validator: RegExpValidator{regExp: /[А-Яа-я]+/}
             }
 
             Label {
@@ -158,6 +143,7 @@ Popup {
                 Layout.alignment: Qt.AlignHCenter
                 selectByMouse: true
                 horizontalAlignment: TextInput.Center
+                validator: RegExpValidator{regExp: /^([0-9]+\.[0-9]+)$/}
             }
 
             Label {
@@ -166,33 +152,6 @@ Popup {
                 font.pointSize: productEditingObject.fontPointSize
                 color: productEditingObject.errorColor
                 visible: false
-                Layout.alignment: Qt.AlignHCenter
-            }
-
-            Label {
-                text: "Единица измерения"
-                font.family: productEditingObject.fontFamily
-                font.pointSize: productEditingObject.fontPointSize
-                color: productEditingObject.textColor
-                Layout.alignment: Qt.AlignHCenter
-            }
-
-            TextField {
-                id: productUnitEditingTf
-                text: old_product_unit_value
-                font.family: productEditingObject.fontFamily
-                font.pointSize: productEditingObject.fontPointSize
-                Layout.preferredWidth: parent.width * productEditingObject.oneSecondPart
-                Layout.alignment: Qt.AlignHCenter
-                selectByMouse: true
-                horizontalAlignment: TextInput.Center
-            }
-
-            Label {
-                id: productUnitMessageLbl
-                font.family: productEditingObject.fontFamily
-                font.pointSize: productEditingObject.fontPointSize
-                color: productEditingObject.errorColor
                 Layout.alignment: Qt.AlignHCenter
             }
 

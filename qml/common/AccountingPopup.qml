@@ -38,7 +38,6 @@ Popup {
             inputValuesRect.visible                     = true
             accountingPopupObject.balanceBeginningValue = accountingModel.getBalanceBeginningValue(providerCB.displayText, categoryCB.displayText,
                                                                                                    productCB.displayText, productUnitCB.displayText)
-
         }
     }
 
@@ -115,7 +114,6 @@ Popup {
 
             accountingPopup.close()
         }
-
     }
 
     function checkInputData() {
@@ -335,8 +333,8 @@ Popup {
 
             ComboBox {
                 id: productUnitCB
-                model: productsModel
-                textRole: "product_unit"
+                model: unitsModel
+                textRole: "unit"
                 font.family: accountingPopupObject.fontFamily
                 font.pointSize: accountingPopupObject.fontPointSize
                 Layout.alignment: Qt.AlignHCenter
@@ -413,6 +411,7 @@ Popup {
                 Layout.preferredWidth: parent.width
                 horizontalAlignment: TextInput.AlignHCenter
                 readOnly: accountingPopupObject.balanceBeginningValue !== 0? true : false
+                validator: RegExpValidator{regExp: /^([0-9]+\.[0-9]+)$/}
             }
 
             Label {
@@ -434,6 +433,7 @@ Popup {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: parent.width
                 horizontalAlignment: TextInput.AlignHCenter
+                validator: RegExpValidator{regExp: /^([0-9]+\.[0-9]+)$/}
             }
 
             Label {
@@ -456,6 +456,7 @@ Popup {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: parent.width
                 horizontalAlignment: TextInput.AlignHCenter
+                validator: RegExpValidator{regExp: /^([0-9]+\.[0-9]+)$/}
             }
 
             Label {

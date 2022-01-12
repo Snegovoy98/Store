@@ -1,6 +1,5 @@
 #include <QSortFilterProxyModel>
 
-
 class PurchaseFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT

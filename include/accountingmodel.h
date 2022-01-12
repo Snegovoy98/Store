@@ -42,6 +42,7 @@ public:
      Q_INVOKABLE void updateProviderData();
      Q_INVOKABLE void updateCategoryData();
      Q_INVOKABLE void updateProductData();
+     Q_INVOKABLE void updateUnitData();
 private:
      QSqlQuery query;     
 };

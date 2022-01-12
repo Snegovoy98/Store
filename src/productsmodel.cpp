@@ -19,7 +19,8 @@ static void createTable()
        "PRIMARY KEY ('product'), "
        "FOREIGN KEY ('provider') REFERENCES Providers('provider_name') ON UPDATE CASCADE "
        "ON DELETE CASCADE, "
-       "FOREIGN KEY ('category') REFERENCES Categories('product_category') ON UPDATE CASCADE"
+       "FOREIGN KEY ('category') REFERENCES Categories('product_category') ON UPDATE CASCADE, "
+       "FOREIGN KEY ('product_unit') REFERENCES Units('unit') ON UPDATE CASCADE"
     ")"))
         qFatal("Failed create table: %s", qPrintable(query.lastError().text()));
 }

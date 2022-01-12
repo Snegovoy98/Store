@@ -489,6 +489,14 @@ Page {
         }
     }
 
+    Connections {
+        target: unitsModel
+
+        function onUnitChangedValue() {
+            accountingModel.updateUnitData()
+        }
+    }
+
     AccountingPopup {
         id: accountingPopup
         x: parent.width * accountingObject.oneSecondPart - width * accountingObject.oneSecondPart
