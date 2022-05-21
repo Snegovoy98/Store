@@ -1,2 +1,2 @@
 # Store
-This is pet project
+Product Store Project
